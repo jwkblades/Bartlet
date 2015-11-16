@@ -1,5 +1,3 @@
-#!/usr/bin/bash
-
 declare -A ALL_BARS
 
 defineBar()
@@ -45,8 +43,6 @@ startBar()
     PREV_BAR_FG=0
     PREV_BAR_BG=0
     BAR_COUNT=0
-
-    PS1=""
 }
 
 addBar()
@@ -85,7 +81,7 @@ addBar()
     fi
 
     ((BAR_COUNT++))
-    PS1="${PS1}${s}"
+    BAR_STRING="${s}"
 }
 
 endBar()
@@ -94,5 +90,5 @@ endBar()
     PREV_BAR_BG=${BAR_BG}
 
     local s="\[\033[3${PREV_BAR_BG:1};49m\]▶\[\033[0m\] "
-    PS1="${PS1}${s}"
+    BAR_STRING="${s}"
 }
