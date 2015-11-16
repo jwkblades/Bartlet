@@ -1,10 +1,14 @@
+TIME_FG=250
+TIME_BG=26
+
 LAST_TIME=0
+
 timeBar()
 {
     local delta=$((${SECONDS} - ${LAST_TIME}))
     if [[ ${delta} -gt 15 ]]; then
-        addBar "38;5;250" "48;5;26" " ${delta} "
+        bartlet_segment ${TIME_FG} ${TIME_BG} " ${delta} "
     fi
     LAST_TIME=${SECONDS}
 }
-defineBar "Time" "timeBar"
+bartlet_define "Time" "timeBar"
