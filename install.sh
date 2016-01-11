@@ -1,8 +1,10 @@
 #!/bin/bash
 
 if [[ ${UID} -ne 0 ]]; then
-    echo "We need root permissions to install."
-    exit 1
+    # user is not root, installing into the user's home directory
+    mkdir ~/.bartlet_plugins
+    cp -r ./src/* ~/.bartlet_plugins
+else
+    # user is root, installing into /etc
+    cp -r ./src/* ./etc/
 fi
-
-cp -r ./src/* ./etc/
