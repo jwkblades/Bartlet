@@ -260,22 +260,30 @@ bartlet_off()
 # include all plugins
 __bartlet_init()
 {
-    BARTLET_BAR_ORDER=()
-
-    local owd=$(pwd)
-    local cwd="$(dirname ${BASH_SOURCE[0]})"
+    local owd=${1:-}
+    local cwd="$(pwd)"
     local dir
-    cd "${cwd}"
+
+    if [[ ! -d "${owd}" ]]; then
+        return 1
+    fi
+
+    cd "${owd}"
     for dir in *; do
         if [[ -d "${dir}" && -f "${dir}/${dir}.sh" ]]; then
-            cd "${cwd}/${dir}"
+            cd "${owd}/${dir}"
             source "${dir}.sh"
         fi
     done
-    cd "${owd}"
-    if [[ -e "${HOME}/.bartlet_colors" ]]; then
-        source "${HOME}/.bartlet_colors"
-    fi
-}
-__bartlet_init
 
+    cd "${cwd}" # zsh error ^[[0m
+    return 0
+}
+
+BARTLET_BAR_ORDER=()
+__bartlet_init /etc/bartlet_plugins/
+__bartlet_init ${HOME}/.bartlet_plugins/
+
+if [[ -e "${HOME}/.bartlet_colors" ]]; then
+    source "${HOME}/.bartlet_colors"
+fi

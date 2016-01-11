@@ -5,9 +5,12 @@ Bartlet is an extremely simple prompt bar creator for Bash which is meant to add
 a little color to your terminal prompt. It has the concept of plugins and suites
 which are automatically loaded, and then enabled by your .bashrc file.
 
-Bartlet tries to be plug-and-play with Bash, that doesn't however mean it will
-be plug-and-play compatible with ZSH (which actually has some incompatibilities
-with Bash, despite its attempts to be completely compatible).
+While loading, Bartlet starts off by checking if `/etc/bartlet_plugins` exists,
+and if it does it loads all plugins it finds therein, after that it also checks
+if your home directory has any plugins (in `~/.bartlet_plugins`) and loads
+those as well. Because plugins may use the same names, we expect that any
+plugins located in your home directory are desired moreso than those located in
+shared user space and as such should take priority.
 
 Why?
 ----
@@ -22,7 +25,7 @@ Installation
 
 Add the following to your .bashrc file to enable bartlet's prompt and branch
 bars:
-    source ~/.bash_plugins/Bartlet.sh
+    source /etc/Bartlet.sh
     
     bartlet_enable "Prompt"
     bartlet_enable "Branch"
@@ -163,5 +166,21 @@ Time
 License
 =======
 
-MIT
+Copyright (c) 2015 by those listed in Contributors.md.
 
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
