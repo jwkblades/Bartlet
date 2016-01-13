@@ -6,7 +6,7 @@ if [[ ${UID} -ne 0 ]]; then
     cp -r ./src/* ~/.bartlet_plugins
 else
     # user is root, installing into /etc
-    cp -r ./src/Bartlet.sh ./etc/
+    cp -r ./src/Bartlet.sh /etc/
     mkdir /etc/bartlet_plugins
     cp -r ./src/StandardSuite /etc/bartlet_plugins/
 fi
