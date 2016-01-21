@@ -105,6 +105,8 @@ BARTLET FUNCTIONS:
 `bartlet_off` Disable bartlet prompt drawing (and revert the prompts to what 
     they were previously).
 
+`bartlet_restart` Calls `bartlet_off` and `bartlet_on` back-to-back.
+
 `__bartlet_init` Internal function, automatically called. Loads all of the
     plugins in the .bash_plugins directory.  These are combined into "suites" 
     and have a directory name with a shell file inside of them that has the
@@ -113,6 +115,20 @@ BARTLET FUNCTIONS:
 
 PROMPT OPTIONS:
 ===============
+
+Bartlet
+-------
+
+`BARTLET_MAINTAIN_PROMPT_COMMAND` If true, we maintain the default prompt
+    command that the terminal has, this is typically enabling VTE which keeps
+    track of the current working directory every time you cd to somewhere and
+    allows new terminals to open in the same directory you are currently in.
+    Defaults to 1.
+
+`BARTLET_LSEP` Specifies the character to use as a segment separator for the
+    left side of segments.
+
+`BARTLET_RSEP` Like `BARTLET_RSEP`, but for the right side.
 
 Prompt
 ------

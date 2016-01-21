@@ -238,12 +238,17 @@ __bartlet_prompt_cmd()
 }
 
 __bartlet_is_enabled=0
+BARTLET_MAINTAIN_PROMPT_COMMAND=1
 bartlet_on()
 {
     if [[ ${__bartlet_is_enabled} == 0 ]]; then
         __BARTLET_PREV_PROMPT=${PS1}
         __BARTLET_PREV_PROMPT_CMD=${PROMPT_COMMAND}
-        PROMPT_COMMAND="${PROMPT_COMMAND};__bartlet_prompt_cmd"
+        if [[ ${BARTLET_MAINTAIN_PROMPT_COMMAND} == 1 ]]; then
+            PROMPT_COMMAND="${PROMPT_COMMAND};__bartlet_prompt_cmd"
+        else
+            PROMPT_COMMAND="__bartlet_prompt_cmd"
+        fi
         __bartlet_is_enabled=1
     fi
 }
@@ -255,6 +260,12 @@ bartlet_off()
         PROMPT_COMMAND="${__BARTLET_PREV_PROMPT_CMD}"
         __bartlet_is_enabled=0
     fi
+}
+
+bartlet_restart()
+{
+    bartlet_off
+    bartlet_on
 }
 
 # include all plugins
