@@ -244,7 +244,7 @@ bartlet_on()
     if [[ ${__bartlet_is_enabled} == 0 ]]; then
         __BARTLET_PREV_PROMPT=${PS1}
         __BARTLET_PREV_PROMPT_CMD=${PROMPT_COMMAND}
-        if [[ ${BARTLET_MAINTAIN_PROMPT_COMMAND} == 1 ]]; then
+        if [[ ${BARTLET_MAINTAIN_PROMPT_COMMAND} == 1 && -n "${__BARTLET_PREV_PROMPT_CMD}" ]]; then
             PROMPT_COMMAND="${PROMPT_COMMAND};__bartlet_prompt_cmd"
         else
             PROMPT_COMMAND="__bartlet_prompt_cmd"
