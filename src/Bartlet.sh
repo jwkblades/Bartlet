@@ -195,7 +195,6 @@ __bartlet_end()
     ### \[\033[$(bartlet_color 1 ${BARTLET_PROMPT_FG});$(bartlet_color 0 ${BARTLET_PROMPT_BG})m\]\[\033[K\]"
     BARTLET_BAR_STRING="${s}"
 }
-trap 'echo -ne "\033[0m"' DEBUG
 
 
 __bartlet_prompt_cmd()
@@ -292,9 +291,15 @@ __bartlet_init()
 }
 
 BARTLET_BAR_ORDER=()
-__bartlet_init /etc/bartlet_plugins/
-__bartlet_init ${HOME}/.bartlet_plugins/
 
-if [[ -e "${HOME}/.bartlet_colors" ]]; then
-    source "${HOME}/.bartlet_colors"
+if [[ $- == *i* ]]; then
+    trap 'echo -ne "\033[0m"' DEBUG
+
+    __bartlet_init /etc/bartlet_plugins/
+    __bartlet_init ${HOME}/.bartlet_plugins/
+
+    if [[ -e "${HOME}/.bartlet_colors" ]]; then
+        source "${HOME}/.bartlet_colors"
+    fi
+
 fi
