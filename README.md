@@ -113,8 +113,8 @@ BARTLET FUNCTIONS:
     same directory name (example: Directory/Directory.sh). Each plugin suite 
     that is run is running in their path.
 
-PROMPT OPTIONS:
-===============
+OPTIONS:
+========
 
 Bartlet
 -------
@@ -156,6 +156,16 @@ Branch
     clean, and the branch name when dirty.
 
 `BRANCH_BAR_BG` The background color for the branch bar.
+
+`BRANCH_SHOW_HG_STATUS` Enable or disable looking up the upstream status in
+    mercurial repositories (to determine if you are ahead or behind the
+    upstream and should push or pull). Default is 0, disabled.
+
+`BRANCH_CHAR` The character used to specify branch.
+`BRANCH_IN` The character used to specify that the upstream is ahead of the
+    local repository.
+`BRANCH_OUT` The character used to specify that the upstream is behind the local
+    repository.
 
 LastStatus
 ----------
