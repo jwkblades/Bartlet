@@ -13,6 +13,6 @@ promptBar()
         FG=${PROMPT_BAD_FG}
         BG=${PROMPT_BAD_BG}
     fi
-    bartlet_segment ${FG} ${BG} "\u@\h \[\033[22m\]\W " "1"
+    bartlet_segment ${FG} ${BG} "$(bartlet_color_wrap bold)\u@\h $(bartlet_color_wrap regular)\W " ""
 }
 bartlet_define "Prompt" "promptBar"

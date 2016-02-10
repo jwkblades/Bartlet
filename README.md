@@ -62,11 +62,18 @@ Here's a quick overview of the "Standard" plugins I have created:
 BARTLET FUNCTIONS:
 ==================
 
-`bartlet_color` Takes 2 parameters, the first one is
-    "isFore" that is either a 0 or 1, where 1 is a foreground color, and 0 is a
-    background color. The second is a number between 0 and 255 -- the terminal 
-    color code, or "standard" to get the default terminal color for foreground 
-    or background. This function outputs the color code to the screen.
+`bartlet_color` Takes any number of parameters, and loops through each one
+    outputting its color code to the screen as it goes. Foreground colors are
+    specified as f:<NUM>, and background colors are specified using b:<NUM>
+    where NUM is between 0 and 255. You may also use "standard" for NUM to reset
+    the fore- or background color to its standard color.
+    Additionally, we allow modifiers to be specified. The supported modifiers
+    are: bold, dim, underline, italic, reverse, and regular. Regular removes all
+    modifiers from the text. It is worth noting that only modifiers that are
+    supported by your terminal emulator will actually do anything.
+
+`bartlet_color_wrap` Forwards all arguments to `bartlet_color`, but wraps the
+    output in \[ and \] for bash prompts.
 
 `bartlet_show_colors` Print each of the 256 color codes (as background) to the
     screen, and their numbers.

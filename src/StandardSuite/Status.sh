@@ -16,6 +16,6 @@ lastStatusBar()
         statusBG=${STATUS_BAD_BG}
         content="${STATUS_BAD_CONTENT}"
     fi
-    ${1} ${statusFG} ${statusBG} "${content}" "1"
+    ${1} ${statusFG} ${statusBG} "${content}" "bold"
 }
 bartlet_define "LastStatus" "lastStatusBar"

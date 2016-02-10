@@ -29,7 +29,7 @@ determineBranch()
     if [[ -n "${branch}" ]]; then
         local dirty=""
         if [[ ${repo} == "hg" ]]; then
-            dirty="$($(return $(hg status 2>/dev/null | wc -l)) && echo '${BRANCH_CLEAN_FG}' || echo '${BRANCH_DIRTY_FG};1')"
+            dirty="$($(return $(hg status 2>/dev/null | wc -l)) && echo -ne "$(bartlet_color_wrap f:${BRANCH_CLEAN_FG})" || echo -ne "$(bartlet_color_wrap bold f:${BRANCH_DIRTY_FG})")"
             if [[ ${BRANCH_SHOW_HG_STATUS} -eq 1 ]]; then
                 $(hg in -l 1 &>/dev/null)
                 if [[ $? -eq 0 ]]; then
@@ -44,7 +44,7 @@ determineBranch()
             if [[ "${branch}" == "HEAD" ]]; then
                 branch="$(git rev-parse --short HEAD 2>/dev/null)"
             fi
-            dirty="$($(return $(git status --porcelain 2>/dev/null | wc -l)) && echo '${BRANCH_CLEAN_FG}' || echo '${BRANCH_DIRTY_FG};1')"
+            dirty="$($(return $(git status --porcelain 2>/dev/null | wc -l)) && echo -ne "$(bartlet_color_wrap f:${BRANCH_CLEAN_FG})" || echo -ne "$(bartlet_color_wrap bold f:${BRANCH_DIRTY_FG})")"
             local remote="$(git rev-parse --symbolic-full-name --abbrev-ref @{upstream} 2>/dev/null)"
             if [[ -n "${remote}" ]]; then
                 local deltas="$(git log --format='%m' --topo-order --left-right ${branch}...${remote} 2>/dev/null)"
@@ -58,9 +58,9 @@ determineBranch()
                 fi
             fi
         fi
-        branch=" \[\033[38;5;${dirty}m\]${BRANCH_CHAR}\[\033[38;5;${BRANCH_CLEAN_FG}m\]${branch} \[\033[$(bartlet_color 1 ${inColor})m\]${BRANCH_IN}\[\033[$(bartlet_color 1 ${outColor})m\]${BRANCH_OUT} "
+        branch=" ${dirty}${BRANCH_CHAR}$(bartlet_color_wrap f:${BRANCH_CLEAN_FG})${branch} $(bartlet_color_wrap f:${inColor})${BRANCH_IN}$(bartlet_color_wrap f:${outColor})${BRANCH_OUT} "
     fi
-    echo -n "${branch}"
+    echo -ne "${branch}"
 }
 
 branchBar()

@@ -11,19 +11,47 @@ BARTLET_DISABLED_FG=125
 
 bartlet_color()
 {
-    local isFore=${1:-"1"}
-    local color=${2:-"standard"}
+    local mod=""
+    local reset_re="\breset|none\b"
+    local fore_re="^f:"
+    local back_re="^b:"
+    for mod in $@; do
+        if [[ $mod =~ $reset_re ]]; then
+            echo -ne "\033[0m"
+        elif [[ $mod =~ $fore_re ]]; then
+            mod=${mod#f:}
+            if [[ $mod == "standard" ]]; then
+                echo -ne "\033[39m"
+            else
+                echo -ne "\033[38;5;${mod}m"
+            fi
+        elif [[ $mod =~ $back_re ]]; then
+            mod=${mod#b:}
+            if [[ $mod == "standard" ]]; then
+                echo -ne "\033[49m"
+            else
+                echo -ne "\033[48;5;${mod}m"
+            fi
+        elif [[ $mod == "bold" ]]; then
+            echo -ne "\033[1m"
+        elif [[ $mod == "faint" ]]; then
+            echo -ne "\033[2m"
+        elif [[ $mod == "italic" ]]; then
+            echo -ne "\033[3m"
+        elif [[ $mod == "underline" ]]; then
+            echo -ne "\033[4m"
+        elif [[ $mod == "invert" ]]; then
+            echo -ne "\033[7m"
+        elif [[ $mod == "regular" ]]; then
+            echo -ne "\033[22;23;24;27m"
+        fi
+    done
+    return 0
+}
 
-    local start="3"
-    if [[ ${isFore} == 0 ]]; then
-        start="4"
-    fi
-
-    if [[ "${color}" -eq "standard" ]]; then
-        echo -n "${start}9"
-    else
-        echo -n "${start}8;5;${color}"
-    fi
+bartlet_color_wrap()
+{
+    echo -ne "\[$(bartlet_color $@)\]"
     return 0
 }
 
@@ -37,7 +65,7 @@ bartlet_show_colors()
             while [[ ${#pindex} -lt 3 ]]; do
                 pindex=" ${pindex}"
             done
-            echo -ne "\033[$(bartlet_color 0 ${index})m    ${pindex}    \033[0m"
+            echo -ne "$(bartlet_color b:${index})    ${pindex}    $(bartlet_color reset)"
             (( index++ ))
             (( offset++ ))
         done
@@ -91,9 +119,9 @@ bartlet_available()
 {
     for bar in "${!BARTLET_ALL_BARS[@]}"; do
         local item=( ${BARTLET_ALL_BARS["${bar}"]} )
-        local enabled="\033[$(bartlet_color 1 ${BARTLET_DISABLED_FG})mDisabled\033[0m"
+        local enabled="$(bartlet_color f:${BARTLET_DISABLED_FG})Disabled$(bartlet_color reset)"
         if [[ ${item[1]} == 1 ]]; then
-            enabled="\033[$(bartlet_color 1 ${BARTLET_ENABLED_FG})mEnabled\033[0m"
+            enabled="$(bartlet_color f:${BARTLET_ENABLED_FG})Enabled$(bartlet_color reset)"
         fi
         echo -e "${bar} ${enabled}"
     done
@@ -131,12 +159,12 @@ bartlet_rsegment()
     BARTLET_RBAR_BG=${BG}
 
     if [[ -n "${EXTRAS}" ]]; then
-        EXTRAS="${EXTRAS};"
+        EXTRAS="${EXTRAS}"
     fi
 
     local s=""
     local PBG=${BARTLET_RPREV_BAR_BG}
-    s="\[\033[$(bartlet_color 1 ${BG})m\]${BARTLET_RSEP}\[\033[${EXTRAS}$(bartlet_color 1 ${FG});$(bartlet_color 0 ${BG})m\]${CONTENT}\[\033[0m\]"
+    s="$(bartlet_color_wrap f:${BG})${BARTLET_RSEP}$(bartlet_color_wrap ${EXTRAS} f:${FG} b:${BG})${CONTENT}$(bartlet_color_wrap reset)"
 
     ((BARTLET_BAR_RCOUNT++))
     BARTLET_BAR_STRING="${s}"
@@ -155,15 +183,15 @@ bartlet_segment()
     BARTLET_LBAR_BG=${BG}
 
     if [[ -n "${EXTRAS}" ]]; then
-        EXTRAS="${EXTRAS};"
+        EXTRAS="${EXTRAS}"
     fi
 
     local s=""
     if [[ ${BARTLET_BAR_LCOUNT} == 0 ]]; then
-        s="\[\033[${EXTRAS}$(bartlet_color 1 ${FG});$(bartlet_color 0 ${BG})m\]${CONTENT}\[\033[0m\]"
+        s="$(bartlet_color_wrap ${EXTRAS} f:${FG} b:${BG})${CONTENT}$(bartlet_color_wrap reset)"
     else
         local PBG=${BARTLET_LPREV_BAR_BG}
-        s="\[\033[$(bartlet_color 1 ${PBG});$(bartlet_color 0 ${BG})m\]${BARTLET_LSEP}\[\033[${EXTRAS}$(bartlet_color 1 ${FG})m\]${CONTENT}\[\033[0m\]"
+        s="$(bartlet_color_wrap f:${PBG} b:${BG})${BARTLET_LSEP}$(bartlet_color_wrap ${EXTRAS} f:${FG})${CONTENT}$(bartlet_color_wrap reset)"
     fi
 
     ((BARTLET_BAR_LCOUNT++))
@@ -189,10 +217,7 @@ __bartlet_end()
     BARTLET_PREV_BAR_FG=${BARTLET_LBAR_FG}
     BARTLET_PREV_BAR_BG=${BARTLET_LBAR_BG}
 
-    #local s="\[\033[3${BARTLET_PREV_BAR_BG:1};49m\]${BARTLET_LSEP}\[\033[0m\] "
-    local s="\[\033[$(bartlet_color 1 ${BARTLET_PREV_BAR_BG});$(bartlet_color 0 standard)m\]${BARTLET_LSEP}\[\033[0m\]"
-    ### local s="\[\033[$(bartlet_color 1 ${BARTLET_PREV_BAR_BG});$(bartlet_color 0 ${BARTLET_PROMPT_BG})m\]${BARTLET_LSEP}\[\033[0m\]"
-    ### \[\033[$(bartlet_color 1 ${BARTLET_PROMPT_FG});$(bartlet_color 0 ${BARTLET_PROMPT_BG})m\]\[\033[K\]"
+    local s="$(bartlet_color_wrap f:${BARTLET_PREV_BAR_BG} b:standard)${BARTLET_LSEP}$(bartlet_color_wrap reset)"
     BARTLET_BAR_STRING="${s}"
 }
 
@@ -208,7 +233,6 @@ __bartlet_prompt_cmd()
     local PL=""
     local PR=""
     for bar in "${BARTLET_BAR_ORDER[@]}"; do
-        #echo "Looking at '${bar}'"
         if [[ -z "${bar}" ]]; then
             unset BARTLET_BAR_ORDER[${index}]
             continue
@@ -218,11 +242,9 @@ __bartlet_prompt_cmd()
         BARTLET_BAR_STRING=""
         if [[ ${item[1]} == 1 ]]; then
             if [[ "${item[0]}" == "L" ]]; then
-                #echo "Left"
                 ${item[2]} bartlet_segment
                 PL="${PL}${BARTLET_BAR_STRING}"
             else
-                #echo "Right"
                 ${item[2]} bartlet_rsegment
                 PR="${PR}${BARTLET_BAR_STRING}"
             fi
@@ -231,7 +253,6 @@ __bartlet_prompt_cmd()
     done
     __bartlet_end
     PS1="${PL}${BARTLET_BAR_STRING}"
-    ### \[\033[s\]\[\033[${COLUMNS}C\]\[\033[1D\]${PR}\[\033[u\]\[\033[$(bartlet_color 1 ${BARTLET_PROMPT_FG});$(bartlet_color 0 ${BARTLET_PROMPT_BG})m\] "
 
     return 0
 }
