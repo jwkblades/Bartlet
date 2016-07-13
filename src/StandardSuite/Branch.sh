@@ -30,6 +30,12 @@ determineBranch()
         local dirty=""
         if [[ ${repo} == "hg" ]]; then
             dirty="$($(return $(hg status 2>/dev/null | wc -l)) && echo -ne "$(bartlet_color_wrap f:${BRANCH_CLEAN_FG})" || echo -ne "$(bartlet_color_wrap bold f:${BRANCH_DIRTY_FG})")"
+            if [[ "${branch}" == "default" ]]; then
+                branch="$(hg book | grep "\*" | awk '{print $2}')"
+                if [[ -z "${branch}" ]]; then
+                    branch="$(hg identify -i)"
+                fi
+            fi
             if [[ ${BRANCH_SHOW_HG_STATUS} -eq 1 ]]; then
                 $(hg in -l 1 &>/dev/null)
                 if [[ $? -eq 0 ]]; then
