@@ -20,8 +20,8 @@ determineBranch()
             repo=""
         fi
     fi
-    local incoming=0
-    local outgoing=0
+    local incoming=""
+    local outgoing=""
 
     local inColor=${BRANCH_FADE_FG}
     local outColor=${BRANCH_FADE_FG}
@@ -64,7 +64,7 @@ determineBranch()
                 fi
             fi
         fi
-        branch=" ${dirty}${BRANCH_CHAR}$(bartlet_color_wrap f:${BRANCH_CLEAN_FG})${branch} $(bartlet_color_wrap f:${inColor})${BRANCH_IN}$(bartlet_color_wrap f:${outColor})${BRANCH_OUT} "
+        branch=" ${dirty}${BRANCH_CHAR}$(bartlet_color_wrap f:${BRANCH_CLEAN_FG})${branch} $(bartlet_color_wrap f:${inColor})${incoming}${BRANCH_IN}$(bartlet_color_wrap f:${outColor})${outgoing}${BRANCH_OUT} "
     fi
     echo -ne "${branch}"
 }
