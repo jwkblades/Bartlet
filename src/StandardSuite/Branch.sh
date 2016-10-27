@@ -33,7 +33,7 @@ determineBranch()
             if [[ "${branch}" == "default" ]]; then
                 branch="$(hg book | grep "\*" | awk '{print $2}')"
                 if [[ -z "${branch}" ]]; then
-                    branch="$(hg identify -i)"
+                    branch="$(hg identify | cut -d' ' -f2-)"
                 fi
             fi
             if [[ ${BRANCH_SHOW_HG_STATUS} -eq 1 ]]; then
