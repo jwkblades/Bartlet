@@ -91,7 +91,8 @@ bartlet_enable()
 
     item[1]=1
     BARTLET_ALL_BARS["${name}"]="${item[@]}"
-    BARTLET_BAR_ORDER[${#BARTLET_BAR_ORDER[*]}]=${name}
+    local removed=( "${name}" )
+    BARTLET_BAR_ORDER=( "${BARTLET_BAR_ORDER[@]/${removed}}" "${name}" )
 }
 
 bartlet_disable()
