@@ -6,6 +6,7 @@ BRANCH_FADE_FG=240
 BRANCH_SHOW_HG_STATUS=0
 
 BRANCH_CHAR="⎇ "
+TAG_CHAR="🏷 "
 BRANCH_IN="↓"
 BRANCH_OUT="↑"
 
@@ -25,6 +26,8 @@ determineBranch()
 
     local inColor=${BRANCH_FADE_FG}
     local outColor=${BRANCH_FADE_FG}
+
+    local typeChar=${BRANCH_CHAR}
 
     if [[ -n "${branch}" ]]; then
         local dirty=""
@@ -48,7 +51,13 @@ determineBranch()
             fi
         elif [[ ${repo} == "git" ]]; then
             if [[ "${branch}" == "HEAD" ]]; then
-                branch="$(git rev-parse --short HEAD 2>/dev/null)"
+                local tag="$(git tag --points-at HEAD)"
+                if [[ -n "${tag}" ]]; then
+                    branch="${tag}"
+                    typeChar=${TAG_CHAR}
+                else
+                    branch="$(git rev-parse --short HEAD 2>/dev/null)"
+                fi
             fi
             dirty="$($(return $(git status --porcelain 2>/dev/null | wc -l)) && echo -ne "$(bartlet_color_wrap f:${BRANCH_CLEAN_FG})" || echo -ne "$(bartlet_color_wrap bold f:${BRANCH_DIRTY_FG})")"
             local remote="$(git rev-parse --symbolic-full-name --abbrev-ref @{upstream} 2>/dev/null)"
@@ -64,7 +73,7 @@ determineBranch()
                 fi
             fi
         fi
-        branch=" ${dirty}${BRANCH_CHAR}$(bartlet_color_wrap f:${BRANCH_CLEAN_FG})${branch} $(bartlet_color_wrap f:${inColor})${incoming}${BRANCH_IN}$(bartlet_color_wrap f:${outColor})${outgoing}${BRANCH_OUT} "
+        branch=" ${dirty}${typeChar}$(bartlet_color_wrap f:${BRANCH_CLEAN_FG})${branch} $(bartlet_color_wrap f:${inColor})${incoming}${BRANCH_IN}$(bartlet_color_wrap f:${outColor})${outgoing}${BRANCH_OUT} "
     fi
     echo -ne "${branch}"
 }
