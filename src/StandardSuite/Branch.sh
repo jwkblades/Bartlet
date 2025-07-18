@@ -63,8 +63,8 @@ determineBranch()
             local remote="$(git rev-parse --symbolic-full-name --abbrev-ref @{upstream} 2>/dev/null)"
             if [[ -n "${remote}" ]]; then
                 local deltas="$(git log --format='%m' --topo-order --left-right ${branch}...${remote} 2>/dev/null)"
-                outgoing=$(echo "${deltas}" | grep "^<" | wc -l)
-                incoming=$(echo "${deltas}" | grep "^>" | wc -l)
+                outgoing=$(echo "${deltas}" | grep -c "^<")
+                incoming=$(echo "${deltas}" | grep -c "^>")
                 if [[ ${incoming} -gt 0 ]]; then
                     inColor=${BRANCH_DIRTY_FG}
                 fi
